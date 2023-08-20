@@ -63,7 +63,7 @@ app.post("/movies/", async (request, response) => {
 
   const addingMovie = await db.run(addMovie);
   const addingId = addingMovie.lastID;
-  response.send(`Movie Successfully`);
+  response.send(`Movie Successfully Added`);
 });
 
 //GET Movie By ID
