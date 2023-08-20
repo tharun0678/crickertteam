@@ -86,7 +86,7 @@ app.put("/movies/:movieId", async (request, response) => {
   const updateMovie = `
   UPDATE movie 
   set director_id = ${directorId}, movie_name = '${movieName}',
-  lead_actor='${leadActor} where movie_id=${movieId}'`;
+  lead_actor='${leadActor}' where movie_id=${movieId}`;
 
   await db.run(updateMovie);
 
@@ -110,7 +110,7 @@ function convertDirectorObjectToArray(object) {
 
 //GET Director list from director table
 app.get("/directors/", async (request, response) => {
-  const directorsList = `select * from director order by director_id`;
+  const directorsList = `select * from director order by director_id;`;
   const directorObject = await db.all(directorsList);
   response.send(
     directorObject.map((eachDirector) => {
