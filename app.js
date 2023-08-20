@@ -76,4 +76,57 @@ app.get("/movies/:movieId", async (request, response) => {
   response.send(result);
 });
 
+//Update Movie By ID
+
+app.put("/movies/:movieId", async (request, response) => {
+  const { movieId } = request.params;
+  const movieDetails = request.body;
+  const { directorId, movieName, leadActor } = movieDetails;
+
+  const updateMovie = `
+  UPDATE movie 
+  set director_id = ${directorId}, movie_name = '${movieName}',
+  lead_actor='${leadActor} where movie_id=${movieId}'`;
+
+  await db.run(updateMovie);
+
+  response.send(`Movie Details Updated`);
+});
+
+//Delete Movie By ID
+app.delete("/movies/:movieId", async (request, response) => {
+  const { movieId } = request.params;
+  const deleteMovie = `Delete from movie where movie_id = ${movieId};`;
+  await db.run(deleteMovie);
+  response.send("Movie Removed");
+});
+
+function convertDirectorObjectToArray(object) {
+  return {
+    directorId: object.director_id,
+    directorName: object.director_name,
+  };
+}
+
+//GET Director list from director table
+app.get("/directors/", async (request, response) => {
+  const directorsList = `select * from director order by director_id`;
+  const directorObject = await db.all(directorsList);
+  response.send(
+    directorObject.map((eachDirector) => {
+      return convertDirectorObjectToArray(eachDirector);
+    })
+  );
+});
+
+app.get("/directors/:directorId/movies/", async (request, response) => {
+  const { directorId } = request.params;
+  const moviesList = `select * from movie where director_id=${directorId};`;
+  const resultQuery = await db.all(moviesList);
+  response.send(
+    resultQuery.map((eachMovie) => {
+      return convertMovieObjectToArray(eachMovie);
+    })
+  );
+});
 module.exports = app;
